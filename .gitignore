@@ -1,4 +1,4 @@
 .DS_Store
-.js
-.js.map
-.d.ts
+src/*.js
+src/*.js.map
+src/*.d.ts
