@@ -1,14 +1,20 @@
 module Core {
+	interface RenderCall {
+		(CanvasRenderingContext2D): void;
+	}
+
 	export class Renderer {
 		public name: string;
 		public width: number;
 		public height: number;
 		public layerZ: number;
+		public isCleared: boolean = true;
 		private canvas: HTMLCanvasElement;
 		private context: CanvasRenderingContext2D;
+		private renderQueue: Array<RenderCall> = [];
 
 		/**
-		 * Initialized a renderer object
+		 * Initialize a renderer object
 		 * @param String name
 		 * @param Number width
 		 * @param Number height
@@ -43,6 +49,42 @@ module Core {
 
 			// Display the element
 			document.body.appendChild(this.canvas);
+		}
+
+		/**
+		 * Clear the canvas
+		 */
+		public clear() {
+			this.context.clearRect(0, 0, this.width, this.height);
+			this.isCleared = true;
+		}
+
+		/**
+		 * Draw some graphics to the canvas (adds to render queue)
+		 * @param Function method(context)
+		 */
+		public draw(method: (CanvasRenderingContext2D) => void) {
+			this.renderQueue.push(method);
+		}
+
+		/**
+		 * Run all render queue methods
+		 */
+		public render() {
+			// Only run if there's something new to draw
+			if (!this.renderQueue.length) return;
+
+			// Clear the canvas
+			this.clear();
+
+			// Run all the queued render methods
+			this.renderQueue.forEach(renderMethod => {
+				renderMethod(this.context);
+			});
+
+			// Reset render queue
+			this.renderQueue = [];
+			this.isCleared = false;
 		}
 	}
 };
