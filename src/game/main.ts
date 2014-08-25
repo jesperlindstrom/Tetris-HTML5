@@ -11,9 +11,12 @@ module Game {
 	 */
 	export function start() {
 		Core.Log.info('Initialized game', 'Game/Main');
-		layers.background = new Core.Renderer('background', 800, 480, 1);
+
+		// Create graphics layers
+		layers.background = new Core.Renderer('background', 800, 480, 1, '#000');
 		layers.game = new Core.Renderer('game', 800, 480, 2);
 
+		// Create game loop
 		loop = new Core.Loop();
 		loop.start();
 

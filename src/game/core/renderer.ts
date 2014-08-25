@@ -9,6 +9,7 @@ module Core {
 		public height: number;
 		public layerZ: number;
 		public isCleared: boolean = true;
+		private background: string;
 		private canvas: HTMLCanvasElement;
 		private context: CanvasRenderingContext2D;
 		private renderQueue: Array<RenderCall> = [];
@@ -20,11 +21,12 @@ module Core {
 		 * @param Number height
 		 * @param Number layerZ
 		 */
-		constructor(name: string, width: number, height: number, layerZ: number = 1) {
+		constructor(name: string, width: number, height: number, layerZ: number = 1, background?: string) {
 			this.name = name;
 			this.width = width;
 			this.height = height;
 			this.layerZ	= layerZ;
+			this.background = background;
 
 			Core.Log.info('Created renderer "' + this.name + '" (' + this.width + 'x' + this.height + ', layer: ' + this.layerZ + ')', 'Core/Renderer');
 
@@ -43,6 +45,10 @@ module Core {
 			this.canvas.height = this.height;
 			this.canvas.style.zIndex = this.layerZ.toString();
 			this.canvas.style.position = 'absolute';
+
+			if (this.background) {
+				this.canvas.style.background = this.background;
+			}
 
 			// Store a reference to the 2D context 
 			this.context = this.canvas.getContext('2d');

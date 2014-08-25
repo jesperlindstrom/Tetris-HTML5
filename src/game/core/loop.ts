@@ -11,6 +11,8 @@ module Core {
 		private lastFrame: number = 0.0;
 
 		constructor() {
+			Core.Log.info('Created loop', 'Core/Loop');
+
 			// Pause when the window is unfocused
 			window.onblur = (e) => {
 				this.stop();
@@ -28,6 +30,7 @@ module Core {
 		 * Start the loop
 		 */
 		public start() {
+			Core.Log.info('Started loop', 'Core/Loop');
 			this.isRunning = true;
 			this.tick(0);
 		}
@@ -36,6 +39,7 @@ module Core {
 		 * Pause the loop
 		 */
 		public stop() {
+			Core.Log.info('Stopped loop', 'Core/Loop');
 			this.isRunning = false;
 			this.rate = 0;
 			this.lastFrame = 0;
@@ -52,7 +56,6 @@ module Core {
 				this.rate = Math.round(delta / 16.67 * 100) / 100;
 				this.FPS = Math.round(1 / delta * 1000);
 			} else {
-				Core.Log.info('Skipped a frame', 'Core/Loop');
 				this.rate = 0;
 				this.FPS = 0;
 			}
