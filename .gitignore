@@ -1,7 +1,7 @@
 .DS_Store
-src/game/*.js
-src/game/core/*.js
-src/game/game/*.js
+src/tetris/*.js
+src/tetris/core/*.js
+src/tetris/game/*.js
 *.js.map
 *.d.ts
 node_modules
