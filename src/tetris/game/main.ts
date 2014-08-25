@@ -18,25 +18,14 @@ module Game {
 
 		// Create game loop
 		loop = new Core.Loop();
-		loop.start();
 
-		var deg: number = 0;
-		var x, y;
+		// Initialize game entities
+		Game.UI.initialize();
+		Game.Blocks.initialize();
+		Game.Player.initialize();
 
-		loop.onUpdate(rate => {
-			deg += rate * 0.05;
-
-			Game.layers.background.draw(context => {
-				context.fillStyle = 'red';
-
-				x = Math.round(Math.cos(deg) * 150) + 200;
-				y = Math.round(Math.sin(deg) * 150) + 200;
-
-				context.fillRect(x, y, 30, 30);
-			});
-
-			Game.layers.background.render();
-		});
+		// Preload assets, then start game loop
+		Core.Assets.onPreload(loop.start);
 	}
 
 	window.onload = Game.start;

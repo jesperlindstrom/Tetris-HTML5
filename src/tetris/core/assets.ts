@@ -3,12 +3,12 @@ module Core {
 		private static cache: any = {};
 
 		/**
-		 * Load and cache an asset file
+		 * Preload and cache an asset file
 		 * @param String name
 		 * @param String filename
 		 * @param Function callback(any)
 		 */
-		public static load(name: string, filename: string, callback?: (any) => void) {
+		public static preload(name: string, filename: string, callback?: (any) => void) {
 			var asset: HTMLImageElement = new Image();
 
 			// Handle success
@@ -43,6 +43,14 @@ module Core {
 			if (!this.cache[name]) return false;
 
 			return this.cache[name];
+		}
+
+		/**
+		 * Wait until all assets have been preloaded
+		 * @param Function callback()
+		 */
+		public static onPreload(callback: () => void) {
+			// todo
 		}
 	}
 }
