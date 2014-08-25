@@ -25,7 +25,9 @@ module Game {
 		Game.Player.initialize();
 
 		// Preload assets, then start game loop
-		Core.Assets.onPreload(loop.start);
+		Core.Assets.preload(() => {
+			loop.start();
+		});
 	}
 
 	window.onload = Game.start;

@@ -1,37 +1,36 @@
 module Core {
+	interface PreloadCall {
+		(next): void;
+	}
+
 	export class Assets {
 		private static cache: any = {};
+		private static preloadMethods: PreloadCall[] = [];
 
 		/**
-		 * Preload and cache an asset file
+		 * Queue an asset to be preloaded and cached
 		 * @param String name
 		 * @param String filename
-		 * @param Function callback(any)
 		 */
-		public static preload(name: string, filename: string, callback?: (any) => void) {
-			var asset: HTMLImageElement = new Image();
+		public static queue(name: string, filename: string) {
+			this.preloadMethods.push((next) => {
+				var asset: HTMLImageElement = new Image();
 
-			// Handle success
-			asset.onload = () => {
-				Core.Log.info('Loaded asset "' + filename + '" as "' + name + '"', 'Core/Assets');
+				// Handle success
+				asset.onload = () => {
+					Core.Log.info('Loaded asset "' + filename + '" as "' + name + '"', 'Core/Assets');
+					this.cache[name] = asset;
+					next();
+				};
 
-				this.cache[name] = asset;
+				// Handle error
+				asset.onerror = () => {
+					Core.Log.error('Asset "' + filename + '" could not be loaded', 'Core/Assets');
+					next();
+				};
 
-				if (typeof callback == 'function') {
-					callback(this.cache[name]);
-				}
-			};
-
-			// Handle error
-			asset.onerror = () => {
-				Core.Log.error('Asset "' + filename + '" could not be loaded', 'Core/Assets');
-
-				if (typeof callback == 'function') {
-					callback(false);
-				}
-			};
-
-			asset.src = filename;
+				asset.src = filename;
+			});
 		}
 
 		/**
@@ -46,11 +45,29 @@ module Core {
 		}
 
 		/**
-		 * Wait until all assets have been preloaded
+		 * Preload all queued assets
 		 * @param Function callback()
 		 */
-		public static onPreload(callback: () => void) {
-			// todo
+		public static preload(callback: () => void) {
+			var assetCount = this.preloadMethods.length;
+
+			// No assets to load, proceed
+			if (!assetCount) {
+				callback();
+				return;
+			}
+
+			var loadedCount: number = 0;
+
+			// Run all asset preload methods
+			this.preloadMethods.forEach(preloadMethod => {
+				preloadMethod(() => {
+					loadedCount++;
+
+					// Are all assets loaded?
+					if (loadedCount == assetCount) callback();
+				});
+			});
 		}
 	}
 }
