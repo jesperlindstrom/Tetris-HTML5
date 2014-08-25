@@ -16,6 +16,8 @@ module Core {
 				return;
 			}
 
+			Core.Log.info('Added input listener for ' + keyName + ' (' + keyCode + ')', 'Core/Input');
+
 			if (!Input.listeners[keyCode]) {
 				Input.listeners[keyCode] = [];
 			}
@@ -30,6 +32,8 @@ module Core {
 		 */
 		public static onKeyDown(e) {
 			if (!Input.listeners[e.keyCode]) return;
+
+			Core.Log.info('Triggered input listener for ' + e.keyCode + ' (' + Input.listeners[e.keyCode].length + ' listeners)', 'Core/Input');
 
 			// Call all listeners
 			Input.listeners[e.keyCode].forEach(method => {

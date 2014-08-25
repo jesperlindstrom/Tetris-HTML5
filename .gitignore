@@ -1,5 +1,6 @@
 .DS_Store
-*.js
+src/game/*.js
+src/game/core/*.js
 *.js.map
 *.d.ts
 node_modules

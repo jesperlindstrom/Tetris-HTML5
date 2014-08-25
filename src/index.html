@@ -3,16 +3,22 @@
 	<head>
 		<title>Tetris HTML5</title>
 		<meta charset="UTF-8" />
+		<link rel="shortcut icon" href="favicon.ico">
+
 		<style type="text/css">
 			body { margin: 0; padding: 0; }
 		</style>
 	</head>
 
 	<body>
+		<!-- Third party dependencies -->
+		<script src="lib/raf.polyfill.js"></script>
+
 		<!-- Load game engine -->
 		<script src="game/core/log.js"></script>
 		<script src="game/core/renderer.js"></script>
 		<script src="game/core/input.js"></script>
+		<script src="game/core/loop.js"></script>
 
 		<!-- Load game -->
 		<script src="game/main.js"></script>
