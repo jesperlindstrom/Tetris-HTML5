@@ -53,6 +53,19 @@ module Core {
 			// Store a reference to the 2D context 
 			this.context = this.canvas.getContext('2d');
 
+			// Retina support
+			if (window.devicePixelRatio == 2) {
+				// Set width to actual "retina" 2x resolution
+				this.canvas.width = this.width * 2;
+				this.canvas.height = this.height * 2;
+
+				// Scale to "non-retina" resolution
+				this.canvas.style.width = this.width.toString() + 'px';
+				this.canvas.style.height = this.height.toString() + 'px';
+
+				this.context.scale(2, 2);
+			}
+
 			// Display the element
 			document.body.appendChild(this.canvas);
 		}
