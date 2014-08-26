@@ -19,14 +19,26 @@ module Game {
 		// Create game loop
 		loop = new Core.Loop();
 
-		// Initialize game entities
-		Game.UI.initialize();
-		Game.Blocks.initialize();
-		Game.Player.initialize();
+		// Queue all assets to be preloaded
+		Game.UI.preload();
+		Game.Blocks.preload();
+		Game.Player.preload();
 
-		// Preload assets, then start game loop
+		// Preload all queued assets, then start game
 		Core.Assets.preload(() => {
+			// Initialize game entities
+			Game.UI.initialize();
+			Game.Blocks.initialize();
+			Game.Player.initialize();
+
+			// Start game loop
 			loop.start();
+		});
+
+		// Render to canvas after each frame
+		loop.onUpdateLast((rate) => {
+			layers.background.render();
+			layers.game.render();
 		});
 	}
 

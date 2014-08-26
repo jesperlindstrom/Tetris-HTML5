@@ -8,6 +8,7 @@ module Core {
 		public FPS: number = 0;
 		public rate: number = 0.0;
 		private updateCalls: Array<UpdateCall> = [];
+		private lastUpdateCalls: Array<UpdateCall> = [];
 		private lastFrame: number = 0.0;
 
 		constructor() {
@@ -71,6 +72,15 @@ module Core {
 				});
 			}
 
+			// Run all last update calls
+			if (this.lastUpdateCalls.length) {
+				this.lastUpdateCalls.forEach(method => {
+					if (typeof method == 'function') {
+						method(this.rate);
+					}
+				});
+			}
+
 			// Request the next frame
 			if (this.isRunning) {
 				window.requestAnimationFrame(time => {
@@ -86,6 +96,15 @@ module Core {
 		 */
 		public onUpdate(method: (number) => void): number {
 			return this.updateCalls.push(method);
+		}
+
+		/**
+		 * Add game logic to be run on as last call for each frame
+		 * @param Function method(number)
+		 * @return Number
+		 */
+		public onUpdateLast(method: (number) => void): number {
+			return this.lastUpdateCalls.push(method);
 		}
 
 		/**
