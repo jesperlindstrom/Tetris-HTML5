@@ -59,11 +59,35 @@ module Game {
 
 			Game.loop.onUpdate((rate) => {
 				Game.layers.game.draw((context) => {
-					this.blockFormations.green.forEach(block => {
-						context.drawImage(this.blocks.green, block[0] * this.blockSize, block[1] * this.blockSize, this.blockSize, this.blockSize);
+					this.blockFormations.blue.forEach(block => {
+						context.drawImage(this.blocks.blue, block[0] * this.blockSize, block[1] * this.blockSize, this.blockSize, this.blockSize);
 					});
 				});
 			});
+		}
+
+		/**
+		 * Rotate a set of coordinates in 90 deg steps
+		 * @param Array formation
+		 * @param Number turns
+		 */
+		private static rotate(formation, turns: number = 1) {
+			// Perform the operation a certain number of times
+			for (var i = 0; i < turns; i++) {
+				// Loop through the set of coordinates
+				formation.forEach(c => {
+					// Rotate 90 deg according to (x, y) -> (-y, x)
+					var tempX: number = c[0];
+					c[0] = -c[1];
+					c[1] = tempX;
+
+					// Replace -0 by 0 for clarity
+					if (c[0] === -0) c[0] = 0;
+					if (c[1] === -0) c[1] = 0;
+				});
+			}
+
+			return formation;
 		}
 	}
 }
