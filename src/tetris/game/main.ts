@@ -36,6 +36,11 @@ module Game {
 			layers.background.render();
 			layers.game.render();
 		});
+
+		// Show FPS?
+		if (Game.config.showFPS) {
+			Core.Debug.initialize(loop);
+		}
 	}
 
 	window.onload = Game.start;
