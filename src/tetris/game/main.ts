@@ -9,8 +9,8 @@ module Game {
 		Core.Log.info('Initialized game', 'Game/Main');
 
 		// Create graphics layers
-		layers.background = new Core.Renderer('background', 800, 480, 1, '#000');
-		layers.game = new Core.Renderer('game', 800, 480, 2);
+		layers.background = new Core.Renderer('background', 590, 600, 1, '#000');
+		layers.game = new Core.Renderer('game', 590, 600, 2);
 
 		// Create game loop
 		loop = new Core.Loop();
