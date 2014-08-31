@@ -1,75 +1,77 @@
 module Game {
 	export class Blocks {
-		private static blocks: any = {};
-		private static blockSize = 40;
-		private static blockFormations: any = {
-			light_blue: [
-				[0,0], [1,0], [2,0], [3,0]
-			],
-
-			blue: [
-				[0,0],
-				[0,1], [1,1], [2,1], [3,1]
-			],
-
-			orange: [
-				                     [3,0],
-				[0,1], [1,1], [2,1], [3,1]
-			],
-
-			yellow: [
-				[0,0], [1,0],
-				[0,1], [1,1]
-			],
-
-			green: [
-				       [1,0], [2,0],
-				[0,1], [1,1]
-			],
-
-			purple: [
-				       [1,0],
-				[0,1], [1,1], [2,1]
-			],
-
-			red: [
-				[0,0], [1,0],
-				       [1,1], [2,1]
-			],
+		private static assets: any = {};
+		private static grid = [];
+		private static currentBlock = {
+			color: 'green',
+			coordinates: []
 		};
 
+		/**
+		 * Preload any game assets
+		 */
 		public static preload() {
-			Core.Assets.queue('block_light_blue', 'assets/block_light_blue.png');
-			Core.Assets.queue('block_blue', 'assets/block_blue.png');
-			Core.Assets.queue('block_orange', 'assets/block_orange.png');
-			Core.Assets.queue('block_yellow', 'assets/block_yellow.png');
-			Core.Assets.queue('block_green', 'assets/block_green.png');
-			Core.Assets.queue('block_purple', 'assets/block_purple.png');
-			Core.Assets.queue('block_red', 'assets/block_red.png');
+			Game.config.blockColors.forEach(name => {
+				Core.Assets.queue('block_' + name, 'block_' + name + '.png');
+			});
 		}
 
+		/**
+		 * Start the game logic
+		 */
 		public static initialize() {
-			this.blocks.light_blue = Core.Assets.get('block_light_blue');
-			this.blocks.blue = Core.Assets.get('block_blue');
-			this.blocks.orange = Core.Assets.get('block_orange');
-			this.blocks.yellow = Core.Assets.get('block_yellow');
-			this.blocks.green = Core.Assets.get('block_green');
-			this.blocks.purple = Core.Assets.get('block_purple');
-			this.blocks.red = Core.Assets.get('block_red');
-
-			Game.loop.onUpdate((rate) => {
-				Game.layers.game.draw((context) => {
-					this.blockFormations.blue.forEach(block => {
-						context.drawImage(this.blocks.blue, block[0] * this.blockSize, block[1] * this.blockSize, this.blockSize, this.blockSize);
-					});
-				});
+			// Load assets
+			Game.config.blockColors.forEach(name => {
+				this.assets[name] = Core.Assets.get('block_' + name);
 			});
+
+			// Set up grid
+			this.prepareGrid(Game.config.grid.width, Game.config.grid.height);
+		
+			console.log(this.grid);
+
+			// Delegate loop update
+			Game.loop.onUpdate((rate) => {
+				this.update(rate);
+				this.render();
+			});
+		}
+
+		/**
+		 * Set up the grid at a specific size
+		 * @param Number width
+		 * @param Number height
+		 */
+		private static prepareGrid(width: number, height: number) {
+			for (var x = 0; x < width; x++) {
+				this.grid[x] = [];
+
+				for (var y = 0; y < height; y++) {
+					this.grid[x][y] = null;
+				}
+			}
+		}
+
+		/**
+		 * Update the game logic
+		 * @param Number rate
+		 */
+		private static update(rate: number) {
+
+		}
+
+		/**
+		 * Draw the game based on the game state
+		 */
+		private static render() {
+
 		}
 
 		/**
 		 * Rotate a set of coordinates in 90 deg steps
 		 * @param Array formation
 		 * @param Number turns
+		 * @return Array newFormation
 		 */
 		private static rotate(formation, turns: number = 1) {
 			// Perform the operation a certain number of times

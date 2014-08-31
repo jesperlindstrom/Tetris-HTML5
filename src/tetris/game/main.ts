@@ -1,8 +1,4 @@
 module Game {
-	export var config = {
-		logLevel: Core.LogLevel.Info
-	};
-
 	export var layers: any = {};
 	export var loop: Core.Loop;
 

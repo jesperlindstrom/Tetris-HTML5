@@ -6,6 +6,7 @@ module Core {
 	export class Assets {
 		private static cache: any = {};
 		private static preloadMethods: PreloadCall[] = [];
+		private static screenDensity = '1x';
 
 		/**
 		 * Queue an asset to be preloaded and cached
@@ -18,18 +19,18 @@ module Core {
 
 				// Handle success
 				asset.onload = () => {
-					Core.Log.info('Loaded asset "' + filename + '" as "' + name + '"', 'Core/Assets');
+					Core.Log.info('Loaded asset "' + filename + '" (@' + this.screenDensity + ') as "' + name + '"', 'Core/Assets');
 					this.cache[name] = asset;
 					next();
 				};
 
 				// Handle error
 				asset.onerror = () => {
-					Core.Log.error('Asset "' + filename + '" could not be loaded', 'Core/Assets');
+					Core.Log.error('Asset "' + filename + '" (@' + this.screenDensity + ') could not be loaded', 'Core/Assets');
 					next();
 				};
 
-				asset.src = filename;
+				asset.src = Game.config.assetsPath + this.screenDensity + '/' + filename;
 			});
 		}
 
@@ -50,6 +51,11 @@ module Core {
 		 */
 		public static preload(callback: () => void) {
 			var assetCount = this.preloadMethods.length;
+
+			// Retina support
+			if (window.devicePixelRatio == 2) {
+				this.screenDensity = '2x';
+			}
 
 			// No assets to load, proceed
 			if (!assetCount) {
