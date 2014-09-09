@@ -3,7 +3,6 @@ module Game {
 		private static assets: any = {};
 		private static grid = [];
 		private static redraw: boolean = true;
-		private static x = 0;
 		private static lastFrameTime: number = 0;
 		private static currentBlock = {
 			color: 'green',
