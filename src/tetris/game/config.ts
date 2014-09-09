@@ -8,6 +8,7 @@ module Game {
 		},
 		assetsPath: 'assets/',
 		showFPS: true,
+		rate: 1000, // ms
 		blockColors: [ 'light_blue', 'blue', 'orange', 'yellow', 'green', 'purple', 'red' ],
 		blocksFormations: {
 			light_blue: [

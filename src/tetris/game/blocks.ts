@@ -2,6 +2,9 @@ module Game {
 	export class Blocks {
 		private static assets: any = {};
 		private static grid = [];
+		private static redraw: boolean = true;
+		private static x = 0;
+		private static lastFrameTime: number = 0;
 		private static currentBlock = {
 			color: 'green',
 			coordinates: []
@@ -57,17 +60,50 @@ module Game {
 		 * @param Number rate
 		 */
 		private static update(rate: number) {
+			// Skip frame if less than a specific time has passed
+			if (new Date().getTime() - this.lastFrameTime < Game.config.rate) return;
 
+			// How to draw blocks:
+			// change this.grid values
+			// this.redraw = true;
+
+			this.lastFrameTime = new Date().getTime();
 		}
 
 		/**
 		 * Draw the game based on the game state
 		 */
 		private static render() {
+			if (!Game.layers.game.isCleared && !this.redraw) return;
 
+			for (var x in this.grid) {
+				for (var y in this.grid[x]) {
+					if (this.grid[x][y] && this.assets[this.grid[x][y]]) {
+						this.drawBlock(this.grid[x][y], x, y);
+					}
+				}
+			}
+
+			this.redraw = false;
 		}
 
 		/**
+		 * Queue a draw call of the block
+		 * @param String color
+		 * @param Number x
+		 * @param Number y
+		 */
+		private static drawBlock(color: string, x: number, y: number) {
+			var size: number = Game.config.grid.size;
+			x = Core.Utils.translate(x);
+			y = Core.Utils.translate(y);
+
+			Game.layers.game.draw(context => {
+				context.drawImage(this.assets[color], x, y, size, size);
+			});
+		}
+
+		/**,
 		 * Rotate a set of coordinates in 90 deg steps
 		 * @param Array formation
 		 * @param Number turns
