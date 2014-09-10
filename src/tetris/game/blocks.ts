@@ -29,8 +29,6 @@ module Game {
 
 			// Set up grid
 			this.prepareGrid(Game.config.grid.width, Game.config.grid.height);
-		
-			console.log(this.grid);
 
 			// Delegate loop update
 			Game.loop.onUpdate((rate) => {
@@ -62,11 +60,24 @@ module Game {
 			// Skip frame if less than a specific time has passed
 			if (new Date().getTime() - this.lastFrameTime < Game.config.rate) return;
 
+			// Spawn new blocks if none are falling
+			if (!this.currentBlock.coordinates.length) {
+				this.spawnBlocks();
+				return;
+			}
+
 			// How to draw blocks:
 			// change this.grid values
 			// this.redraw = true;
 
 			this.lastFrameTime = new Date().getTime();
+		}
+
+		/**
+		 * Spawn a new set of user controllable blocks
+		 */
+		private static spawnBlocks() {
+			//var color: string = Game.config.blockColors[]
 		}
 
 		/**
