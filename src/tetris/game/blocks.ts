@@ -77,7 +77,23 @@ module Game {
 		 * Spawn a new set of user controllable blocks
 		 */
 		private static spawnBlocks() {
-			//var color: string = Game.config.blockColors[]
+			var color: string = Core.Utils.randomItem(Game.config.blockColors);
+			var formation = Game.config.blockFormations[color];
+
+			Core.Log.info('Spawning new blocks (' + color + ')', 'Game/Blocks');
+
+			this.currentBlock.color = color;
+			this.currentBlock.coordinates = formation;
+
+			for (var x in this.currentBlock.coordinates) {
+				for (var y in this.currentBlock.coordinates[x]) {
+					if (Core.Collision.test(this.grid, { x: x, y: y})) {
+						// fail
+						
+						return;
+					}
+				}
+			}
 		}
 
 		/**

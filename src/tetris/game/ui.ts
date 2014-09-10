@@ -69,5 +69,12 @@ module Game {
 			this.score[key] += amount;
 			this.redraw = true;
 		}
+
+		/**
+		 * Make the game fail
+		 */
+		public static fail() {
+			
+		}
 	}
 }

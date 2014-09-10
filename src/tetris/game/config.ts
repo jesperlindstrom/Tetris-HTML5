@@ -10,7 +10,7 @@ module Game {
 		showFPS: true,
 		rate: 1000, // ms
 		blockColors: [ 'light_blue', 'blue', 'orange', 'yellow', 'green', 'purple', 'red' ],
-		blocksFormations: {
+		blockFormations: {
 			light_blue: [
 				[0,0], [1,0], [2,0], [3,0]
 			],
