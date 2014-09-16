@@ -5,6 +5,7 @@ module Core {
 
 	export class Loop {
 		public isRunning: boolean = true;
+		public isKilled: boolean = false;
 		public FPS: number = 0;
 		public rate: number = 0.0;
 		private updateCalls: Array<UpdateCall> = [];
@@ -46,11 +47,24 @@ module Core {
 			this.lastFrame = 0;
 		}
 
+		/** 
+	  	 * Stop the loop forever
+		 */
+		public kill() {
+			Core.Log.info('Killed loop', 'Core/Loop');
+			this.isRunning = false;
+			this.isKilled = true;
+			this.rate = 0;
+			this.lastFrame = 0;
+		}
+
 		/**
 		 * Run the next tick of the loop
 		 * @param Number time
 		 */
 		private tick(time: number) {
+			if (this.isKilled) return;
+			
 			if (this.lastFrame && time) {
 				var delta: number = time - this.lastFrame; // 60 FPS ≈ 16.6667
 

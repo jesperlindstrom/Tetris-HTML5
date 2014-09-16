@@ -30,5 +30,27 @@ module Core {
 
 			return stack[index];
 		}
+
+		/**
+		 * Make a copy of a variable
+		 * @param Any item
+		 * @return Any
+		 */
+		public static copy(item) {
+			return JSON.parse(JSON.stringify(item));
+		}
+
+		/**
+		 * Center a set of coordinates horizontally
+		 * @param Array coordinates
+		 * @return Array
+		 */
+		public static centerHorizontally(coordinates) {
+			coordinates.forEach((point) => {
+				point[0] += Game.config.grid.width/2 - 2;
+			});
+
+			return coordinates;
+		}
 	}
 }

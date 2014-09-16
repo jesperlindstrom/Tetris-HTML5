@@ -11,6 +11,10 @@ module Game {
 			lines: 0,
 			score: 0
 		};
+		private static nextBlock = {
+			color: '',
+			coordinates: []
+		}
 
 		/**
 		 * Preload UI assets
@@ -53,6 +57,18 @@ module Game {
 
 				// Draw lines
 				context.fillText(this.score.lines, 515, 335);
+
+				// Draw next blocks if the asset exists
+				var nextBlockColor = Core.Assets.get('block_' + this.nextBlock.color);
+
+				if (nextBlockColor) {
+					this.nextBlock.coordinates.forEach((block) => {
+						var x = block[0] * 20 + 480;
+						var y = block[1] * 20 + 60;
+
+						context.drawImage(nextBlockColor, x, y, 20, 20);
+					});
+				}
 				
 				this.redraw = false;
 			});
@@ -75,7 +91,19 @@ module Game {
 		 */
 		public static lose() {
 			Core.Log.info('Player lost');
-			Game.loop.stop();
+			Game.loop.kill();
+		}
+
+		/**
+		 * Update the next block viewer
+		 * @param String color
+		 * @param Array formation
+		 */
+		public static setNextBlock(color, formation) {
+			this.nextBlock.color = color;
+			this.nextBlock.coordinates = formation;
+
+			this.redraw = true;
 		}
 	}
 }

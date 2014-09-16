@@ -9,6 +9,10 @@
 			color: '',
 			coordinates: []
 		};
+		private static nextBlock = {
+			color: '',
+			coordinates: []
+		};
 
 		/**
 		 * Preload any game assets
@@ -30,6 +34,19 @@
 
 			// Set up grid
 			this.prepareGrid(Game.config.grid.width, Game.config.grid.height);
+
+			// Generate initial block
+			this.queueNextBlock();
+
+			// Input: move left
+			Core.Input.on('left', () => {
+				this.deltaX = -1;
+			});
+
+			// Input: move right
+			Core.Input.on('right', () => {
+				this.deltaX = 1;
+			});
 
 			// Delegate loop update
 			Game.loop.onUpdate((rate) => {
@@ -70,9 +87,18 @@
 				return;
 			}
 
+			// Move to the side if requested and we can
+			if ([1, -1].indexOf(this.deltaX) != -1 && this.canMoveSide()) {
+				this.currentBlock.coordinates.forEach((point) => {
+					point[0] += this.deltaX;
+				});
+			}
+
 			// Move down if we can
 			if (this.canMoveDown()) {
-				this.currentBlock.coordinates.forEach((point) => { point[1]++; });
+				this.currentBlock.coordinates.forEach((point) => {
+					point[1]++;
+				});
 			} else {
 				// Place the current block on the grid
 				this.placeCurrentBlock();
@@ -103,6 +129,26 @@
 		}
 
 		/**
+		 * Check if the current blocks can move to the requested side
+		 * @return Boolean
+		 */
+		private static canMoveSide(): boolean {
+			var x: number, y: number;
+
+			for (var point in this.currentBlock.coordinates) {
+				x = this.currentBlock.coordinates[point][0];
+				y = this.currentBlock.coordinates[point][1];
+
+				if (Core.Collision.test(this.grid, { x: x + this.deltaX, y: y }) || Core.Collision.testBounds({x: x + this.deltaX, y: y })) {
+					Core.Log.info('Failed to move to side (' + (x + this.deltaX) + '; ' + y + ')', 'Game/Blocks');
+					return false;
+				}
+			}
+
+			return true;
+		}
+
+		/**
 		 * Place the current block
 		 */
 		private static placeCurrentBlock() {
@@ -120,17 +166,14 @@
 		 * Spawn a new set of user controllable blocks
 		 */
 		private static spawnBlocks() {
-			var color: string = Core.Utils.randomItem(Game.config.blockColors);
+			Core.Log.info('Spawning new blocks (' + this.nextBlock.color + ')', 'Game/Blocks');
 
-			Core.Log.info('Spawning new blocks (' + color + ')', 'Game/Blocks');
-
-			this.currentBlock.color = color;
-			this.currentBlock.coordinates = Game.config.blockFormations[color];
+			this.currentBlock.color = Core.Utils.copy(this.nextBlock.color);
+			var formation = Core.Utils.copy(this.nextBlock.coordinates);
+			this.currentBlock.coordinates = Core.Utils.centerHorizontally(formation);
 
 			// Check for collisions
 			var x: number, y: number;
-
-			console.log(this.currentBlock.coordinates[0]);
 
 			for (var point in this.currentBlock.coordinates) {
 				x = this.currentBlock.coordinates[point][0];
@@ -144,6 +187,18 @@
 			}
 
 			this.redraw = true;
+			this.queueNextBlock();
+		}
+
+		/**
+		 * Queue a new block
+		 */
+		private static queueNextBlock() {
+			this.nextBlock.color = Core.Utils.randomItem(Game.config.blockColors);
+			this.nextBlock.coordinates = Core.Utils.copy(Game.config.blockFormations[this.nextBlock.color]);
+
+			// Update UI
+			Game.UI.setNextBlock(this.nextBlock.color, this.nextBlock.coordinates);
 		}
 
 		/**
