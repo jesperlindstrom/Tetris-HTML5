@@ -1,11 +1,12 @@
-module Game {
+    module Game {
 	export class Blocks {
 		private static assets: any = {};
 		private static grid = [];
 		private static redraw: boolean = true;
 		private static lastFrameTime: number = 0;
+		private static deltaX: number = 0;
 		private static currentBlock = {
-			color: 'green',
+			color: '',
 			coordinates: []
 		};
 
@@ -59,6 +60,9 @@ module Game {
 		private static update(rate: number) {
 			// Skip frame if less than a specific time has passed
 			if (new Date().getTime() - this.lastFrameTime < Game.config.rate) return;
+			
+			// Update last frame time
+			this.lastFrameTime = new Date().getTime();
 
 			// Spawn new blocks if none are falling
 			if (!this.currentBlock.coordinates.length) {
@@ -66,11 +70,50 @@ module Game {
 				return;
 			}
 
-			// How to draw blocks:
-			// change this.grid values
-			// this.redraw = true;
+			// Move down if we can
+			if (this.canMoveDown()) {
+				this.currentBlock.coordinates.forEach((point) => { point[1]++; });
+			} else {
+				// Place the current block on the grid
+				this.placeCurrentBlock();
+			}
 
-			this.lastFrameTime = new Date().getTime();
+			this.deltaX = 0;
+			this.redraw = true;
+		}
+
+		/**
+		 * Check if the current blocks can fall down by one block
+		 * @return Boolean
+		 */
+		private static canMoveDown(): boolean {
+			var x: number, y: number;
+
+			for (var point in this.currentBlock.coordinates) {
+				x = this.currentBlock.coordinates[point][0];
+				y = this.currentBlock.coordinates[point][1];
+
+				if (Core.Collision.test(this.grid, { x: x, y: y + 1 }) || Core.Collision.testBounds({x: x, y: y + 1 })) {
+					Core.Log.info('Collided at (' + x + '; ' + (y + 1) + ')', 'Game/Blocks');
+					return false;
+				}
+			}
+
+			return true;
+		}
+
+		/**
+		 * Place the current block
+		 */
+		private static placeCurrentBlock() {
+			// Copy the blocks to the grid
+			this.currentBlock.coordinates.forEach((point) => {
+				this.grid[point[0]][point[1]] = this.currentBlock.color;
+			});
+		
+			// Trigger a new block to spawn
+			this.currentBlock.color = '';
+			this.currentBlock.coordinates = [];
 		}
 
 		/**
@@ -78,19 +121,25 @@ module Game {
 		 */
 		private static spawnBlocks() {
 			var color: string = Core.Utils.randomItem(Game.config.blockColors);
-			var formation = Game.config.blockFormations[color];
 
 			Core.Log.info('Spawning new blocks (' + color + ')', 'Game/Blocks');
 
 			this.currentBlock.color = color;
-			this.currentBlock.coordinates = formation;
+			this.currentBlock.coordinates = Game.config.blockFormations[color];
 
 			// Check for collisions
-			for (var x in this.currentBlock.coordinates) {
-				for (var y in this.currentBlock.coordinates[x]) {
-					if (Core.Collision.test(this.grid, { x: x, y: y })) {
-						return;
-					}
+			var x: number, y: number;
+
+			console.log(this.currentBlock.coordinates[0]);
+
+			for (var point in this.currentBlock.coordinates) {
+				x = this.currentBlock.coordinates[point][0];
+				y = this.currentBlock.coordinates[point][1];
+
+				if (Core.Collision.test(this.grid, { x: x, y: y })) {
+					Core.Log.info('Spawn-collided at (' + x + '; ' + (y + 1) + ')', 'Game/Blocks');
+					Game.UI.lose();
+					return;
 				}
 			}
 

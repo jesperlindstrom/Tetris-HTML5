@@ -5,7 +5,7 @@ module Core {
 		 * @param String message
 		 * @param String namespace
 		 */
-		public static info(message: string, namespace?: string) {
+		public static info(message: string, namespace: string = '') {
 			if (Game.config.logLevel >= LogLevel.Info && console && console.log) {
 				if (namespace) namespace = '[' + namespace + '] ';
 
@@ -18,7 +18,7 @@ module Core {
 		 * @param String message
 		 * @param String namespace
 		 */
-		public static warning(message: string, namespace?: string) {
+		public static warning(message: string, namespace: string = '') {
 			if (Game.config.logLevel >= LogLevel.Warning && console && console.warn) {
 				if (namespace) namespace = '[' + namespace + '] ';
 
@@ -31,7 +31,7 @@ module Core {
 		 * @param String message
 		 * @param String namespace
 		 */
-		public static error(message: string, namespace?: string) {
+		public static error(message: string, namespace: string = '') {
 			if (Game.config.logLevel >= LogLevel.Error && console && console.error) {
 				if (namespace) namespace = '[' + namespace + '] ';
 

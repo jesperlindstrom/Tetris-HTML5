@@ -71,10 +71,11 @@ module Game {
 		}
 
 		/**
-		 * Make the game fail
+		 * Make the player lose
 		 */
-		public static fail() {
-			
+		public static lose() {
+			Core.Log.info('Player lost');
+			Game.loop.stop();
 		}
 	}
 }
