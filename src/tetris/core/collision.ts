@@ -6,7 +6,7 @@ module Core {
 		 * @param Array coordinates
 		 */
 		public static test(grid, coordinates) {
-			
+			return false;
 		}
 	}
 }

@@ -85,15 +85,16 @@ module Game {
 			this.currentBlock.color = color;
 			this.currentBlock.coordinates = formation;
 
+			// Check for collisions
 			for (var x in this.currentBlock.coordinates) {
 				for (var y in this.currentBlock.coordinates[x]) {
-					if (Core.Collision.test(this.grid, { x: x, y: y})) {
-						// fail
-						
+					if (Core.Collision.test(this.grid, { x: x, y: y })) {
 						return;
 					}
 				}
 			}
+
+			this.redraw = true;
 		}
 
 		/**
@@ -102,6 +103,7 @@ module Game {
 		private static render() {
 			if (!Game.layers.game.isCleared && !this.redraw) return;
 
+			// Draw grid
 			for (var x in this.grid) {
 				for (var y in this.grid[x]) {
 					if (this.grid[x][y] && this.assets[this.grid[x][y]]) {
@@ -109,6 +111,13 @@ module Game {
 					}
 				}
 			}
+
+			// Draw user blocks
+			this.currentBlock.coordinates.forEach((block) => {
+				if (!this.assets[this.currentBlock.color]) return;
+
+				this.drawBlock(this.currentBlock.color, block[0], block[1]);
+			});
 
 			this.redraw = false;
 		}
