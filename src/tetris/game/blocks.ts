@@ -4,7 +4,6 @@
 		private static grid = [];
 		private static redraw: boolean = true;
 		private static lastFrameTime: number = 0;
-		private static deltaX: number = 0;
 		private static currentBlock = {
 			color: '',
 			coordinates: []
@@ -40,12 +39,12 @@
 
 			// Input: move left
 			Core.Input.on('left', () => {
-				this.deltaX = -1;
+				this.moveSide(-1);
 			});
 
 			// Input: move right
 			Core.Input.on('right', () => {
-				this.deltaX = 1;
+				this.moveSide(1);
 			});
 
 			// Delegate loop update
@@ -53,6 +52,21 @@
 				this.update(rate);
 				this.render();
 			});
+		}
+
+		/**
+		 * Move the current block to the side
+		 * @param Number deltaX
+		 */
+		private static moveSide(deltaX: number) {
+			// Move to the side if requested and it's possible
+			if (this.canMoveSide(deltaX)) {
+				this.currentBlock.coordinates.forEach((point) => {
+					point[0] += deltaX;
+				});
+			}
+
+			this.redraw = true;
 		}
 
 		/**
@@ -87,13 +101,6 @@
 				return;
 			}
 
-			// Move to the side if requested and we can
-			if ([1, -1].indexOf(this.deltaX) != -1 && this.canMoveSide()) {
-				this.currentBlock.coordinates.forEach((point) => {
-					point[0] += this.deltaX;
-				});
-			}
-
 			// Move down if we can
 			if (this.canMoveDown()) {
 				this.currentBlock.coordinates.forEach((point) => {
@@ -104,7 +111,6 @@
 				this.placeCurrentBlock();
 			}
 
-			this.deltaX = 0;
 			this.redraw = true;
 		}
 
@@ -130,17 +136,18 @@
 
 		/**
 		 * Check if the current blocks can move to the requested side
+		 * @param Number deltaX
 		 * @return Boolean
 		 */
-		private static canMoveSide(): boolean {
+		private static canMoveSide(deltaX: number): boolean {
 			var x: number, y: number;
 
 			for (var point in this.currentBlock.coordinates) {
 				x = this.currentBlock.coordinates[point][0];
 				y = this.currentBlock.coordinates[point][1];
 
-				if (Core.Collision.test(this.grid, { x: x + this.deltaX, y: y }) || Core.Collision.testBounds({x: x + this.deltaX, y: y })) {
-					Core.Log.info('Failed to move to side (' + (x + this.deltaX) + '; ' + y + ')', 'Game/Blocks');
+				if (Core.Collision.test(this.grid, { x: x + deltaX, y: y }) || Core.Collision.testBounds({x: x + deltaX, y: y })) {
+					Core.Log.info('Failed to move to side (' + (x + deltaX) + '; ' + y + ')', 'Game/Blocks');
 					return false;
 				}
 			}
