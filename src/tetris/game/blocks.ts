@@ -47,6 +47,12 @@
 				this.moveSide(1);
 			});
 
+			// Input: move down
+			Core.Input.on('down', () => {
+				this.fallUntilCollision();
+				this.placeCurrentBlock();
+			});
+
 			// Delegate loop update
 			Game.loop.onUpdate((rate) => {
 				this.update(rate);
@@ -109,9 +115,50 @@
 			} else {
 				// Place the current block on the grid
 				this.placeCurrentBlock();
+
+				// Are any of the rows full?
+				this.detectFullLines();
 			}
 
 			this.redraw = true;
+		}
+
+		/**
+		 * Detect full lines and clear them for score
+		 * 
+		 */
+		private static detectFullLines() {
+			for (var x in this.grid) {
+				var full: boolean = true;
+
+				for (var y in this.grid[x]) {
+					if (!this.grid[x][y]) full = false;
+				}
+
+				if (full) {
+					this.clearLine(x);
+					break;
+				}
+			}
+		}
+
+		/**
+		 * Clear a line
+		 * @param Number x
+		 */
+		private static clearLine(x: number) {
+
+		}
+
+		/**
+		 * Make the current block fall until it collides
+		 */
+		private static fallUntilCollision() {
+			while (this.canMoveDown()) {
+				this.currentBlock.coordinates.forEach((point) => {
+					point[1]++;
+				});
+			}
 		}
 
 		/**
@@ -167,6 +214,8 @@
 			// Trigger a new block to spawn
 			this.currentBlock.color = '';
 			this.currentBlock.coordinates = [];
+
+			this.redraw = true;
 		}
 
 		/**
