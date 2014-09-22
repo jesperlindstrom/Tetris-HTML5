@@ -79,7 +79,7 @@ module Game {
 		 * @param String key
 		 * @param Number amount
 		 */
-		public static updateStats(key: string, amount: number) {
+		public static updateStats(key: string, amount: number = 1) {
 			if (typeof this.score[key] == 'undefined') return;
 
 			this.score[key] += amount;

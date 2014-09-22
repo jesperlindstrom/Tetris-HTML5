@@ -51,6 +51,7 @@
 			Core.Input.on('down', () => {
 				this.fallUntilCollision();
 				this.placeCurrentBlock();
+				this.detectFullLines();
 			});
 
 			// Delegate loop update
@@ -125,29 +126,50 @@
 
 		/**
 		 * Detect full lines and clear them for score
-		 * 
 		 */
 		private static detectFullLines() {
-			for (var x in this.grid) {
-				var full: boolean = true;
+			console.log('Checking for full lines');
 
-				for (var y in this.grid[x]) {
-					if (!this.grid[x][y]) full = false;
+			var row = Game.config.grid.height - 1;
+
+			// Loop rows
+			while (row >= 0) {
+				var cleared: boolean = true;
+
+				// Loop through every block in the row
+				for (var x = 0; x < Game.config.grid.width; x++) {
+					if (!this.grid[x][row]) {
+						cleared = false;
+					}
 				}
 
-				if (full) {
-					this.clearLine(x);
+				if (cleared) {
+					this.clearLine(row);
 					break;
 				}
+
+				row--;
 			}
 		}
 
 		/**
 		 * Clear a line
-		 * @param Number x
+		 * @param Number y
 		 */
-		private static clearLine(x: number) {
+		private static clearLine(y: number) {
+			// Clear line
+			for (var x in this.grid) {
+				this.grid[x][y] = null;
+			}
 
+			// Update score
+			Game.UI.updateStats('lines');
+			Game.UI.updateStats('score', 100); // TODO: special score for multi-line etc?
+
+			// TODO: gravity
+
+			// Detect new full lines after applying gravity
+			this.detectFullLines();
 		}
 
 		/**
