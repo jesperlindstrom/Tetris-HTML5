@@ -50,6 +50,10 @@
 			// Input: move down
 			Core.Input.on('down', () => {
 				this.fallUntilCollision();
+
+				// Hard drop: 2 x number of blocks
+				Game.UI.updateStats('score', 2 * this.currentBlock.coordinates.length);
+
 				this.placeCurrentBlock();
 				this.detectFullLines();
 			});
@@ -114,6 +118,9 @@
 					point[1]++;
 				});
 			} else {
+				// Soft drop: 1 x number of blocks
+				Game.UI.updateStats('score', this.currentBlock.coordinates.length);
+				
 				// Place the current block on the grid
 				this.placeCurrentBlock();
 
@@ -166,7 +173,15 @@
 			Game.UI.updateStats('lines');
 			Game.UI.updateStats('score', 100); // TODO: special score for multi-line etc?
 
-			// TODO: gravity
+			while (y--) {
+				for (var x in this.grid) {
+					if (this.grid[x][y]) {
+						console.log('Moving (' + x + '; ' + y + ') to (' + x + '; ' + (y + 1) + ')');
+						this.grid[x][y + 1] = this.grid[x][y];
+						this.grid[x][y] = null;
+					}
+				}
+			}
 
 			// Detect new full lines after applying gravity
 			this.detectFullLines();
@@ -185,14 +200,19 @@
 
 		/**
 		 * Check if the current blocks can fall down by one block
+		 * @param Object blocks
 		 * @return Boolean
 		 */
-		private static canMoveDown(): boolean {
+		private static canMoveDown(blocks: any = []): boolean {
 			var x: number, y: number;
 
-			for (var point in this.currentBlock.coordinates) {
-				x = this.currentBlock.coordinates[point][0];
-				y = this.currentBlock.coordinates[point][1];
+			if (!blocks.length) {
+				blocks = this.currentBlock.coordinates;
+			}
+
+			for (var point in blocks) {
+				x = blocks[point][0];
+				y = blocks[point][1];
 
 				if (Core.Collision.test(this.grid, { x: x, y: y + 1 }) || Core.Collision.testBounds({x: x, y: y + 1 })) {
 					Core.Log.info('Collided at (' + x + '; ' + (y + 1) + ')', 'Game/Blocks');
