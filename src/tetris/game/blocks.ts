@@ -6,7 +6,8 @@
 		private static lastFrameTime: number = 0;
 		private static currentBlock = {
 			color: '',
-			coordinates: []
+			coordinates: [],
+			rotation: 0
 		};
 		private static nextBlock = {
 			color: '',
@@ -56,6 +57,37 @@
 
 				this.placeCurrentBlock();
 				this.detectFullLines();
+			});
+
+			// Input: rotate
+			Core.Input.on('up', () => {
+				this.currentBlock.rotation++;
+
+				var baseCoordinates = Core.Utils.copy(Game.config.blockFormations[this.currentBlock.color]);
+				baseCoordinates = this.rotate(baseCoordinates, this.currentBlock.rotation);
+
+				var deltaX: number = this.currentBlock.coordinates[0][0];
+				var deltaY: number = this.currentBlock.coordinates[0][1];
+
+				var canRotate: boolean = true;
+
+				baseCoordinates.forEach(point => {
+					point[0] += deltaX;
+					point[1] += deltaY;
+
+					if (Core.Collision.test(this.grid, { x: point[0], y: point[1] }) || Core.Collision.testBounds({ x: point[0], y: point[1] })) {
+						Core.Log.info('Failed to rotate ' + (this.currentBlock.rotation * 90) + 'deg (' + (point[0]) + '; ' + point[1] + ')', 'Game/Blocks');
+						canRotate = false;
+					}
+				});
+
+				if (!canRotate) {
+					this.currentBlock.rotation--;
+					return;
+				}
+
+				this.currentBlock.coordinates = baseCoordinates;
+				this.redraw = true;
 			});
 
 			// Delegate loop update
@@ -267,6 +299,7 @@
 			// Trigger a new block to spawn
 			this.currentBlock.color = '';
 			this.currentBlock.coordinates = [];
+			this.currentBlock.rotation = 0;
 
 			this.redraw = true;
 		}
@@ -280,6 +313,7 @@
 			this.currentBlock.color = Core.Utils.copy(this.nextBlock.color);
 			var formation = Core.Utils.copy(this.nextBlock.coordinates);
 			this.currentBlock.coordinates = Core.Utils.centerHorizontally(formation);
+			this.currentBlock.rotation = 0;
 
 			// Check for collisions
 			var x: number, y: number;
@@ -358,10 +392,12 @@
 		 * @return Array newFormation
 		 */
 		private static rotate(formation, turns: number = 1) {
+			var formationCopy = Core.Utils.copy(formation);
+
 			// Perform the operation a certain number of times
 			for (var i = 0; i < turns; i++) {
 				// Loop through the set of coordinates
-				formation.forEach(c => {
+				formationCopy.forEach(c => {
 					// Rotate 90 deg according to (x, y) -> (-y, x)
 					var tempX: number = c[0];
 					c[0] = -c[1];
@@ -373,7 +409,7 @@
 				});
 			}
 
-			return formation;
+			return formationCopy;
 		}
 	}
 }
