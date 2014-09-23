@@ -66,6 +66,17 @@
 		}
 
 		/**
+		 * Restart game
+		 */
+		public static reset() {
+			// Set up grid
+			this.prepareGrid(Game.config.grid.width, Game.config.grid.height);
+
+			// Generate initial block
+			this.queueNextBlock();
+		}
+
+		/**
 		 * Move the current block to the side
 		 * @param Number deltaX
 		 */
@@ -120,7 +131,7 @@
 			} else {
 				// Soft drop: 1 x number of blocks
 				Game.UI.updateStats('score', this.currentBlock.coordinates.length);
-				
+
 				// Place the current block on the grid
 				this.placeCurrentBlock();
 

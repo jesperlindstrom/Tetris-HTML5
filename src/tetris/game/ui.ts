@@ -90,8 +90,26 @@ module Game {
 		 * Make the player lose
 		 */
 		public static lose() {
-			Core.Log.info('Player lost');
+			Core.Log.info('Player lost', 'Game/UI');
 			Game.loop.kill();
+
+			var loseMessage = document.createElement('div');
+			loseMessage.innerHTML = 'You lost! Click to restart';
+			loseMessage.id = 'lost-message';
+
+			loseMessage.onclick = () => {
+				// Reset game
+				this.score.lines = 0;
+				this.score.score = 0;
+				this.nextBlock.color = '';
+				this.nextBlock.coordinates = [];
+				Game.Blocks.reset();
+				Game.loop.revive();
+
+				document.body.removeChild(loseMessage);
+			};
+
+			document.body.appendChild(loseMessage);
 		}
 
 		/**

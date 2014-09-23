@@ -59,6 +59,15 @@ module Core {
 		}
 
 		/**
+		 * Restart the loop
+		 */
+		public revive() {
+			Core.Log.info('Revived loop', 'Core/Loop');
+			this.isKilled = false;
+			this.start();
+		}
+
+		/**
 		 * Run the next tick of the loop
 		 * @param Number time
 		 */
