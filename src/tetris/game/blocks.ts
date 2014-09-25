@@ -1,4 +1,4 @@
-    module Game {
+module Game {
 	export class Blocks {
 		private static assets: any = {};
 		private static grid = [];
