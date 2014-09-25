@@ -3,6 +3,8 @@ Tetris HTML5
 
 Simple Tetris clone made in HTML5 for my upper secondary school graduation project.
 
+![Screenshot](http://i.imgur.com/3M062rm.jpg)
+
 ## Installation
 In order to install this project, you will need [Node.js](http://nodejs.org/) installed.
 
