@@ -40,16 +40,22 @@ module Game {
 
 			// Input: move left
 			Core.Input.on('left', () => {
+				if (!Blocks.currentBlock.coordinates.length) return;
+
 				this.moveSide(-1);
 			});
 
 			// Input: move right
 			Core.Input.on('right', () => {
+				if (!Blocks.currentBlock.coordinates.length) return;
+
 				this.moveSide(1);
 			});
 
 			// Input: move down
 			Core.Input.on('down', () => {
+				if (!Blocks.currentBlock.coordinates.length) return;
+
 				this.fallUntilCollision();
 
 				// Hard drop: 2 x number of blocks
@@ -61,6 +67,8 @@ module Game {
 
 			// Input: rotate
 			Core.Input.on('up', () => {
+				if (!Blocks.currentBlock.coordinates.length) return;
+
 				this.currentBlock.rotation++;
 
 				var baseCoordinates = Core.Utils.copy(Game.config.blockFormations[this.currentBlock.color]);
