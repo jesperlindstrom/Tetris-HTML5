@@ -66,8 +66,15 @@ module Game {
 				var nextBlockColor = Core.Assets.get('block_' + this.nextBlock.color);
 
 				if (nextBlockColor) {
+					var maxX = this.nextBlock.coordinates[this.nextBlock.coordinates.length - 1][0];
+
+					// y= -0.5x + 1.5
+					var deltaX = -0.5*maxX + 1.5;
+
+					console.log(deltaX);
+
 					this.nextBlock.coordinates.forEach((block) => {
-						var x = block[0] * 20;
+						var x = block[0] * 20 + deltaX * 20;
 						var y = block[1] * 20;
 
 						context.drawImage(nextBlockColor, x, y, 20, 20);
