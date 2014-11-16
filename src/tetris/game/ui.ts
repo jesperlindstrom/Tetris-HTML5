@@ -6,6 +6,9 @@ module Game {
 
 	export class UI {
 		private static backgroundImage: HTMLImageElement;
+		private static scoreValue;
+		private static linesValue;
+		private static nextBlockCanvas: Core.Renderer;
 		private static redraw: boolean = true;
 		private static score: PlayerScore = {
 			lines: 0,
@@ -28,6 +31,11 @@ module Game {
 		 */
 		public static initialize() {
 			this.backgroundImage = Core.Assets.get('background');
+			this.scoreValue = document.getElementById('score-value');
+			this.linesValue = document.getElementById('lines-value');
+
+			var nextBlockCanvas = document.getElementById('next-canvas');
+			this.nextBlockCanvas = new Core.Renderer('NextBlock', 80, 40, 0, '', nextBlockCanvas);
 
 			Game.loop.onUpdate((rate) => {
 				// Only redraw when we need to
@@ -43,35 +51,38 @@ module Game {
 		 * Render the game UI
 		 */
 		private static render() {
-			Game.layers.background.draw(context => {
-				// Draw background UI
-				context.drawImage(this.backgroundImage, 0, 0, 590, 600);
+			// Draw score
+			if (this.score.score != this.scoreValue.innerHTML) {
+				this.scoreValue.innerHTML = this.score.score;
+			}
 
-				// Set text style
-				context.font = 'bold 40px sans-serif';
-				context.fillStyle = '#111111';
-				context.textAlign = 'center';
+			// Draw lines
+			if (this.score.lines != this.linesValue.innerHTML) {
+				this.linesValue.innerHTML = this.score.lines;
+			}
 
-				// Draw score
-				context.fillText(this.score.score, 515, 210);
-
-				// Draw lines
-				context.fillText(this.score.lines, 515, 335);
-
+			this.nextBlockCanvas.draw(context => {
 				// Draw next blocks if the asset exists
 				var nextBlockColor = Core.Assets.get('block_' + this.nextBlock.color);
 
 				if (nextBlockColor) {
 					this.nextBlock.coordinates.forEach((block) => {
-						var x = block[0] * 20 + 480;
-						var y = block[1] * 20 + 60;
+						var x = block[0] * 20;
+						var y = block[1] * 20;
 
 						context.drawImage(nextBlockColor, x, y, 20, 20);
 					});
 				}
-				
-				this.redraw = false;
 			});
+
+			this.nextBlockCanvas.render();
+
+			Game.layers.background.draw(context => {
+				// Draw background UI
+				context.drawImage(this.backgroundImage, 0, 0, 590, 600);
+			});
+
+			this.redraw = false;
 		}
 
 		/**

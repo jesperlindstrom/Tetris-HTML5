@@ -21,30 +21,45 @@ module Core {
 		 * @param Number height
 		 * @param Number layerZ
 		 */
-		constructor(name: string, width: number, height: number, layerZ: number = 1, background?: string) {
+		constructor(name: string, width: number, height: number, layerZ?: number, background?: string, canvas?) {
 			this.name = name;
 			this.width = width;
 			this.height = height;
+
+			// Optional values
 			this.layerZ	= layerZ;
 			this.background = background;
 
+			// Canvas element is provided
+			var shouldCreateCanvas: boolean = true;
+
+			if (canvas) {
+				this.canvas = canvas;
+				shouldCreateCanvas = false;
+			}
+
 			Core.Log.info('Created renderer "' + this.name + '" (' + this.width + 'x' + this.height + ', layer: ' + this.layerZ + ')', 'Core/Renderer');
 
-			this.createCanvas();
+			this.createCanvas(shouldCreateCanvas);
 		}
 
 		/**
 		 * Create a canvas element
 		 */
-		private createCanvas() {
-			// Create element
-			this.canvas = document.createElement('canvas');
+		private createCanvas(shouldCreateCanvas: boolean = true) {
+			if (shouldCreateCanvas) {
+				// Create element
+				this.canvas = document.createElement('canvas');
+				this.canvas.style.position = 'absolute';
+			}
 
 			// Set properties
 			this.canvas.width = this.width;
 			this.canvas.height = this.height;
-			this.canvas.style.zIndex = this.layerZ.toString();
-			this.canvas.style.position = 'absolute';
+
+			if (this.layerZ) {
+				this.canvas.style.zIndex = this.layerZ.toString();
+			}
 
 			if (this.background) {
 				this.canvas.style.background = this.background;
@@ -66,8 +81,10 @@ module Core {
 				this.context.scale(2, 2);
 			}
 
-			// Display the element
-			document.body.appendChild(this.canvas);
+			if (shouldCreateCanvas) {
+				// Display the element
+				document.body.appendChild(this.canvas);
+			}
 		}
 
 		/**
