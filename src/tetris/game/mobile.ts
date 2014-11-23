@@ -7,7 +7,11 @@ module Game {
 		public static initialize() {
 			Core.Log.info('Initializing mobile interface', 'Game/Mobile');
 
-			Mobile.touchListener = Hammer(document.body);
+			Mobile.touchListener = Hammer(document.body, {
+				recognizers: [
+					[ Hammer.Swipe ]
+				]
+			});
 
 			// Map swipe touch events to keys
 			Mobile.onTouch('swipeup', InputKeys.up);
