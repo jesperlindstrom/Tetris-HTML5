@@ -1,6 +1,6 @@
 module.exports = function(grunt) {
 	grunt.initConfig({
-		clean: [ 'src/tetris/**/*.js', 'src/**/*.d.ts', 'src/**/*.js.map' ],
+		clean: [ 'src/tetris/**/*.js', 'src/**/*.js.map' ],
 
 		typescript: {
 			base: {

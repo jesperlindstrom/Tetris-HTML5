@@ -10,7 +10,7 @@ module Core {
 		public layerZ: number;
 		public isCleared: boolean = true;
 		private background: string;
-		private canvas: HTMLCanvasElement;
+		private canvas;
 		private context: CanvasRenderingContext2D;
 		private renderQueue: Array<RenderCall> = [];
 
@@ -51,11 +51,10 @@ module Core {
 				// Create element
 				this.canvas = document.createElement('canvas');
 				this.canvas.style.position = 'absolute';
+				this.canvas.width = this.width;
+				this.canvas.height = this.height;
+				this.canvas.className = 'renderer-canvas';
 			}
-
-			// Set properties
-			this.canvas.width = this.width;
-			this.canvas.height = this.height;
 
 			if (this.layerZ) {
 				this.canvas.style.zIndex = this.layerZ.toString();

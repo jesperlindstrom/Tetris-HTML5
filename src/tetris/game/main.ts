@@ -1,3 +1,5 @@
+/// <reference path="../../lib/modernizr.d.ts" />
+
 module Game {
 	export var layers: any = {};
 	export var loop: Core.Loop;
@@ -6,6 +8,12 @@ module Game {
 	 * Initialize the Tetris game
 	 */
 	export function start() {
+		// No canvas support?
+		if (!Modernizr.canvas) {
+			document.body.innerHTML = 'HTML5 canvas is not supported. Please upgrade your web browser.';
+			return;
+		}
+
 		Core.Log.info('Initialized game', 'Game/Main');
 
 		// Create graphics layers
@@ -34,6 +42,11 @@ module Game {
 			layers.background.render();
 			layers.game.render();
 		});
+
+		// Touch device? Enable touch controls
+		if (Modernizr.touch) {
+			Game.Mobile.initialize();
+		}
 
 		// Show FPS?
 		if (Game.config.showFPS) {

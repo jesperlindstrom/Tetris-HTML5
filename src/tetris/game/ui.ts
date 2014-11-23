@@ -71,8 +71,6 @@ module Game {
 					// y= -0.5x + 1.5
 					var deltaX = -0.5*maxX + 1.5;
 
-					console.log(deltaX);
-
 					this.nextBlock.coordinates.forEach((block) => {
 						var x = block[0] * 20 + deltaX * 20;
 						var y = block[1] * 20;
