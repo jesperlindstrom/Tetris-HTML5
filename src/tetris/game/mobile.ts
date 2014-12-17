@@ -9,7 +9,7 @@ module Game {
 
 			Mobile.touchListener = Hammer(document.body, {
 				recognizers: [
-					[ Hammer.Swipe ]
+					[ Hammer.Swipe, Hammer.Tap ]
 				]
 			});
 
