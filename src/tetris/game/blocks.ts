@@ -39,21 +39,21 @@ module Game {
 			this.queueNextBlock();
 
 			// Input: move left
-			Core.Input.on('left', () => {
+			Core.Input.on(['left', 'a'], () => {
 				if (!Blocks.currentBlock.coordinates.length) return;
 
 				this.moveSide(-1);
 			});
 
 			// Input: move right
-			Core.Input.on('right', () => {
+			Core.Input.on(['right', 'd'], () => {
 				if (!Blocks.currentBlock.coordinates.length) return;
 
 				this.moveSide(1);
 			});
 
 			// Input: move down
-			Core.Input.on('down', () => {
+			Core.Input.on(['down', 's'], () => {
 				if (!Blocks.currentBlock.coordinates.length) return;
 
 				this.fallUntilCollision();
@@ -66,7 +66,7 @@ module Game {
 			});
 
 			// Input: rotate
-			Core.Input.on('up', () => {
+			Core.Input.on(['up', 'w'], () => {
 				if (!Blocks.currentBlock.coordinates.length) return;
 
 				this.currentBlock.rotation++;
